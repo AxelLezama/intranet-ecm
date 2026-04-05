@@ -46,6 +46,12 @@ new class extends Component
                         {{ __('Departamentos') }}
                     </x-nav-link>
                 </div>
+
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link :href="route('documentTypes.index')" :active="request()->routeIs('documentTypes.index')" wire:navigate>
+                        {{ __('Tipos de documentos') }}
+                    </x-nav-link>
+                </div>
             </div>
 
             <!-- Settings Dropdown -->

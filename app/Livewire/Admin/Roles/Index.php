@@ -18,13 +18,18 @@ class Index extends Component
 
     public function mount()
     {
-        $this->roles = Role::all();
+        $this->loadRoles();
     }
 
     public function render()
     {
         return view('livewire.admin.roles.index')
         ->layout('layouts.app'); 
+    }
+
+    public function loadRoles()
+    {
+        $this->roles = Role::all();
     }
 
     public function store()

@@ -1,78 +1,106 @@
 <div class="p-6">
-    {{-- If you look to others for fulfillment, you will never truly be fulfilled. --}}
+
     <!-- Modal -->
-    @if ($isModalOpen)
-        <div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-            <div class="bg-white p-6 rounded shadow-lg w-96">
+    <x-modal-l :show="$isModalOpen" :title="$isEditing ? 'Editar Rol' : 'Crear Rol'" closeAction="closeModal">
 
-                <h2 class="text-lg font-bold mb-4">
-                    {{ $isEditing ? 'Editar Rol' : 'Crear Rol' }}
-                </h2>
+        <form wire:submit.prevent="{{ $isEditing ? 'update' : 'store' }}">
 
-                <form wire:submit.prevent="{{ $isEditing ? 'update' : 'store' }}">
+            <!-- Nombre -->
+            <input type="text" wire:model="name" placeholder="Nombre" class="w-full border p-2 mb-2 rounded">
 
-                    <input type="text" wire:model="name" placeholder="Nombre" class="w-full border p-2 mb-2">
+            @error('name')
+                <span class="text-red-500 text-sm uppercase">{{ $message }}</span>
+            @enderror
 
-                    @error('name')
-                        <span class="text-red-500 text-sm">{{ $message }}</span>
-                    @enderror
+            <!-- Descripción -->
+            <textarea wire:model="description" placeholder="Descripción" class="w-full border p-2 mb-4 rounded">
+            </textarea>
 
-                    <textarea wire:model="description" placeholder="Descripción" class="w-full border p-2 mb-2"></textarea>
+            <!-- Acciones -->
+            <div class="flex justify-end gap-2">
+                <button type="button" wire:click="closeModal" class="px-4 py-2 border rounded">
+                    Cancelar
+                </button>
 
-                    <div class="flex justify-end gap-2">
-                        <button type="button" wire:click="closeModal">
-                            Cancelar
-                        </button>
-
-                        <button class="bg-green-500 text-white px-4 py-2 rounded">
-                            Guardar
-                        </button>
-                    </div>
-
-                </form>
-
+                <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded">
+                    Guardar
+                </button>
             </div>
-        </div>
-    @endif
 
-    <div class="overflow-x-auto rounded border border-gray-300 shadow-sm">
-        <button class="bg-blue-500 text-white p-4 rounded mb-2" wire:click="$set('isModalOpen', true)">
-            Agregar Rol
-        </button>
-        <h1 class="text-center font-bold text-3xl">Roles</h1>
-        <table class="min-w-full divide-y-2 divide-gray-200 rounded">
-            <thead class="ltr:text-left rtl:text-right">
+        </form>
+
+    </x-modal-l>
+
+    <!-- Board -->
+    <x-board-l title="Roles">
+
+        <!-- Botón -->
+        <x-slot name="actions">
+            <button class="bg-blue-500 text-white px-4 py-2 rounded" wire:click="$set('isModalOpen', true)">
+                Agregar Rol
+            </button>
+        </x-slot>
+
+        <!-- Tabla -->
+        <table class="min-w-full divide-y-2 divide-gray-200">
+            <thead>
                 <tr class="*:font-medium *:text-gray-900">
-                    <th class="px-3 py-2 whitespace-nowrap">ID</th>
-                    <th class="px-3 py-2 whitespace-nowrap">Rol</th>
-                    <th class="px-3 py-2 whitespace-nowrap">Descripción</th>
-                    <th class="px-3 py-2 whitespace-nowrap">Acciones</th>
+                    <th class="px-3 py-2">ID</th>
+                    <th class="px-3 py-2">Rol</th>
+                    <th class="px-3 py-2">Descripción</th>
+                    <th class="px-3 py-2">Acciones</th>
                 </tr>
             </thead>
 
             <tbody class="divide-y divide-gray-200">
                 @forelse ($roles as $role)
-                    <tr class="*:text-gray-900 ">
-                        <td class="px-3 py-2 whitespace-nowrap text-center">{{ $role->id }}</td>
-                        <td class="px-3 py-2 whitespace-nowrap text-center">{{ $role->name }}</td>
-                        <td class="px-3 py-2 whitespace-nowrap text-center">{{ $role->description }}</td>
-                        <td class="px-3 py-2 whitespace-nowrap text-center">
-                            <button class="text-blue-500" wire:click="edit({{ $role->id }})">
-                                Editar
-                            </button>
-                            <button class="text-red-500"
-                                onclick="confirm('¿Seguro que deseas eliminar este rol?') || event.stopImmediatePropagation()"
-                                wire:click="delete({{ $role->id }})">
-                                Eliminar
-                            </button>
+                    <tr>
+                        <td class="px-3 py-2 text-center">
+                            {{ $role->id }}
+                        </td>
+
+                        <td class="px-3 py-2 text-center">
+                            {{ $role->name }}
+                        </td>
+
+                        <td class="px-3 py-2 text-center">
+                            {{ $role->description }}
+                        </td>
+
+                        <td class="px-3 py-2 text-center space-x-2">
+
+                            <!-- Editar -->
+                            <div class="flex justify-center gap-2">
+
+                                <!-- Editar -->
+                                <button
+                                    class="flex items-center gap-1 bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm transition"
+                                    wire:click="edit({{ $role->id }})">
+                                    Editar
+                                </button>
+
+                                <!-- Eliminar -->
+                                <button
+                                    class="flex items-center gap-1 bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm transition"
+                                    onclick="confirm('¿Seguro que deseas eliminar este rol?') || event.stopImmediatePropagation()"
+                                    wire:click="delete({{ $role->id }})">
+                                    Eliminar
+                                </button>
+
+                            </div>
+
                         </td>
                     </tr>
                 @empty
-                    <h1>No hay roles</h1>
+                    <tr>
+                        <td colspan="4" class="text-center py-4 text-gray-500">
+                            No hay roles
+                        </td>
+                    </tr>
                 @endforelse
-
-
             </tbody>
         </table>
-    </div>
+
+    </x-board-l>
+
 </div>
