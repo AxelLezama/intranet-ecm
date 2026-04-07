@@ -1,5 +1,6 @@
 > [!NOTE] 
 > Instalación:
+
 > [!WARNING]
 > Paso 1. Abrir la terminal en la dirección www de laragon (es donde arranca mi servidor local)
 > [!NOTE]
