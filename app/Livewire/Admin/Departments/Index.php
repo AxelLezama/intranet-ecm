@@ -40,7 +40,7 @@ class Index extends Component
     public function store()
     {
         $this->validate([
-            'name' => ['required', 'string', 'max:255']
+            'name' => ['required', 'string', 'max:255', 'unique:departments,name']
         ]);
 
         Department::create([
@@ -95,6 +95,7 @@ class Index extends Component
     public function closeModal()
     {
         $this->reset(['name', 'is_active', 'departmentId', 'isEditing']);
+        $this->resetValidation();
         $this->is_active = true; // valor por defecto
         $this->isModalOpen = false;
     }

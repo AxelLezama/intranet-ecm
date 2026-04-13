@@ -18,7 +18,7 @@
             > 
 
             @error('name')
-                <span class="text-red-500 text-sm">{{ $message }}</span>
+                <span class="text-red-500 text-sm uppercase">{{ $message }}</span>
             @enderror
 
             <!-- Activo -->

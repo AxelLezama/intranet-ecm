@@ -16,6 +16,10 @@
             <textarea wire:model="description" placeholder="Descripción" class="w-full border p-2 mb-4 rounded">
             </textarea>
 
+            @error('description')
+                <span class="text-red-500 text-sm uppercase">{{ $message }}</span>
+            @enderror
+
             <!-- Acciones -->
             <div class="flex justify-end gap-2">
                 <button type="button" wire:click="closeModal" class="px-4 py-2 border rounded">
@@ -42,7 +46,7 @@
         </x-slot>
 
         <!-- Tabla -->
-        <table class="min-w-full divide-y-2 divide-gray-200">
+        <table class="min-w-full divide-y-2 divide-gray-800">
             <thead>
                 <tr class="*:font-medium *:text-gray-900">
                     <th class="px-3 py-2">ID</th>
@@ -100,7 +104,5 @@
                 @endforelse
             </tbody>
         </table>
-
     </x-board-l>
-
 </div>

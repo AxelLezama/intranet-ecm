@@ -24,7 +24,7 @@ class Index extends Component
     public function render()
     {
         return view('livewire.admin.roles.index')
-        ->layout('layouts.app'); 
+            ->layout('layouts.app');
     }
 
     public function loadRoles()
@@ -36,15 +36,15 @@ class Index extends Component
     {
         //Validamos roles
         $this->validate([
-            'name' => ['required','string','max:255'],
-            'description' => ['nullable','string','max:255'],
+            'name' => ['required', 'string', 'max:255', 'unique:roles,name'],
+            'description' => ['nullable', 'string', 'max:255'],
         ]);
         //Creamos un rol
         Role::create([
             'name' => $this->name,
             'description' => $this->description
         ]);
-        
+
         #Recargamos los roles
         $this->roles = Role::all();
 
@@ -65,7 +65,7 @@ class Index extends Component
         $this->roleId = $role->id;
         $this->name = $role->name;
         $this->description = $role->description;
-        
+
         #Activamos modo edicion
         $this->isEditing = true;
         $this->isModalOpen = true;
@@ -91,7 +91,7 @@ class Index extends Component
         $this->roles = Role::all();
 
         //reseteamos las propiedades
-        $this->reset(['name','description','roleId','isEditing']);
+        $this->reset(['name', 'description', 'roleId', 'isEditing']);
         $this->isModalOpen = false;
     }
 
@@ -107,6 +107,7 @@ class Index extends Component
     public function closeModal()
     {
         $this->reset(['name', 'description', 'roleId', 'isEditing']);
+        $this->resetValidation();
         $this->isModalOpen = false;
     }
 }
