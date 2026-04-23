@@ -1,7 +1,7 @@
 <div class="p-6">
 
     <!-- Modal -->
-    <x-modal-l :show="$isModalOpen" :title="$isEditing ? 'Editar Usuario' : 'Crear Usuario'" closeAction="closeModal">
+    <x-modal-l :show="$isModalOpen" :title="$isEditing ? 'Editar Noticia' : 'Crear Noticia'" closeAction="closeModal">
 
         <form wire:submit.prevent="{{ $isEditing ? 'update' : 'store' }}">
 
@@ -34,11 +34,11 @@
             @enderror
 
             <!-- Rol -->
-            <select wire:model="role_id" class="w-full border p-2 mb-2 rounded">
+            <select wire:model="user_id" class="w-full border p-2 mb-2 rounded">
                 <option value="">Seleccionar Rol</option>
-                @foreach($roles as $role)
-                    <option value="{{ $role->id }}">{{ $role->name }}</option>
-                @endforeach
+                {{-- @foreach($users as $user)
+                    <option value="{{ $user->id }}">{{ $user->name }}</option>
+                @endforeach --}}
             </select>
 
             @error('role_id')
@@ -48,9 +48,9 @@
             <!-- Departamento -->
             <select wire:model="department_id" class="w-full border p-2 mb-2 rounded">
                 <option value="">Seleccionar Departamento</option>
-                @foreach($departments as $department)
+                {{-- @foreach($departments as $department)
                     <option value="{{ $department->id }}">{{ $department->name }}</option>
-                @endforeach
+                @endforeach --}}
             </select>
 
             @error('department_id')
@@ -83,12 +83,12 @@
     </x-modal-l>
 
     <!-- Board -->
-    <x-board-l title="Usuarios">
+    <x-board-l title="Noticias / Avisos">
 
         <!-- Botón -->
         <x-slot name="actions">
             <button class="bg-blue-500 text-white px-4 py-2 rounded" wire:click="$set('isModalOpen', true)">
-                Agregar Usuario
+                Publicar Noticia
             </button>
         </x-slot>
 
@@ -97,18 +97,22 @@
             <thead>
                 <tr class="*:font-medium *:text-gray-900">
                     <th class="px-3 py-2">ID</th>
-                    <th class="px-3 py-2">Número de Empleado</th>
-                    <th class="px-3 py-2">Nombre</th>
-                    <th class="px-3 py-2">Email</th>
+                    <th class="px-3 py-2">Creado por:</th>
+                    <th class="px-3 py-2">Actualizado por:</th>
+                    <th class="px-3 py-2">Título</th>
+                    <th class="px-3 py-2">Contenido</th>
+                    <th class="px-3 py-2">Imagen</th>
                     <th class="px-3 py-2">Rol</th>
-                    <th class="px-3 py-2">Departamento</th>
+                    <th class="px-3 py-2">Prioridad</th>
                     <th class="px-3 py-2">Activo</th>
+                    <th class="px-3 py-2">Fecha de publicación</th>
+                    <th class="px-3 py-2">Fecha de expiración</th>
                     <th class="px-3 py-2">Acciones</th>
                 </tr>
             </thead>
 
             <tbody class="divide-y divide-gray-200">
-                @forelse ($users as $user)
+                {{-- @forelse ($users as $user)
                     <tr>
                         <td class="px-3 py-2 text-center">
                             {{ $user->id }}
@@ -139,8 +143,8 @@
                                 <span class="text-green-500 font-semibold">Activo</span>
                             @else
                                 <span class="text-red-500 font-semibold">Inactivo</span>
-                            @endif
-                        </td>
+                            @endif --}}
+                        {{-- </td>
 
                         <td class="px-3 py-2 text-center space-x-2">
 
@@ -172,7 +176,7 @@
                             No hay usuarios
                         </td>
                     </tr>
-                @endforelse
+                @endforelse --}}
             </tbody>
         </table>
     </x-board-l>

@@ -13,14 +13,23 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
+        // User::create([
+        //     'role_id' => 1,
+        //     'department_id' => 1,
+        //     'employee_number' => '9667',
+        //     'name' => 'test',
+        //     'email' => 'test@example.test',
+        //     'password' => Hash::make('12345678'),
+            
+        // ]);
         User::create([
             'role_id' => 1,
             'department_id' => 1,
-            'employee_number' => '9667',
+            'employee_number' => 'test',
             'name' => 'test',
-            'email' => 'test@example.test',
-            'password' => Hash::make('12345678'),
+            'email' => 'test@test.test',
+            'password' => Hash::make('111111111'),
             
         ]);
-    }
+        }
 }
