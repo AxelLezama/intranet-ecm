@@ -45,4 +45,17 @@ class Document extends Model
     {
         return $this->hasMany(DocumentVersion::class);
     }
+
+    /**
+     * Obtener todos los departamentos que tienen cierto documento
+     */
+    public function departments(){
+        return $this->belongsToMany(Department::class);
+    }
+
+    /**
+     * Scope de filtrado para documentos
+     */
+
+    
 }

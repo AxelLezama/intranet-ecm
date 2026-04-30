@@ -36,8 +36,14 @@ new class extends Component
                 </div>
 
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('roles.index')" :active="request()->routeIs('roles.index')" wire:navigate>
-                        {{ __('Roles') }}
+                    <x-nav-link :href="route('documentManager.index')" :active="request()->routeIs('documentManager.index')" wire:navigate>
+                        {{ __('Documentos') }}
+                    </x-nav-link>
+                </div>
+                
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link :href="route('documentVersionManager.index', 0)" :active="request()->routeIs('documentVersionManager.index')" wire:navigate>
+                        {{ __('Documentos Versiones') }}
                     </x-nav-link>
                 </div>
 

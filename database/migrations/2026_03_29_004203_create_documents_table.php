@@ -16,7 +16,10 @@ return new class extends Migration
             $table->foreignId('document_type_id')
                 ->constrained()
                 ->restrictOnDelete();
-            $table->string('title');
+                $table->string('title');
+                $table->string('code')->unique();
+                $table->string('description')->nullable();
+                $table->enum('status', ['draft', 'active', 'obsolete']);
             $table->decimal('current_version', 4, 2)->default(1.0);
             $table->foreignId('created_by')
                 ->nullable()

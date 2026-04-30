@@ -55,13 +55,58 @@ class DocumentVersionService
         string $startDate,
         ?string $note = null,
     ): DocumentVersion {
-        return DB::transaction(function () use ($document, $file, $newVersion, $changeType, $startDate, $note){
+        return DB::transaction(function () use ($document, $file, $newVersion, $changeType, $startDate, $note) {
+
+            #Cerrar versión vigente automaticamente al crear una nueva modificando un registro nulo
             DocumentVersion::where('document_id', $document->id)
-            ->whereNull('end_date')
-            ->update([
-                'end_date' => now()->toDateString(),
+                ->whereNull('end_date')
+                ->update([
+                    'end_date' => now()->toDateString(), #Fecha fin al momento de crear una nueva versión
+                    'updated_by' => auth()->id,
+                ]);
+
+            #Subimos la nueva versión
+            $path = $this->storeFile($file, $document->id, $newVersion);
+
+
+            #Creamos la nueva versión
+            $version = DocumentVersion::create([
+                'document_id' => $document->id,
+                'version' => $newVersion,
+                'file_path' => $path,
+                'note' => $note,
+                'changeType' => $changeType,
+                'start_date' => $startDate,
+                'end_date' => null,
+                'created_by' => auth()->id,
                 'updated_by' => auth()->id,
             ]);
+
+            #Actualizamos la versión actual en documents
+            $document->update([
+                'current_version' => $newVersion,
+                'updated_by' => auth()->id,
+            ]);
+
+            return $version;
         });
+    }
+
+
+    #Formato para creación de carpetas
+    public function storeFile(
+        TemporaryUploadedFile|UploadedFile $file,
+        int $documentId,
+        float $version,
+    ): string {
+        $versionLabel = number_format($version, 2, '.','');
+        $originalName = $file->getClientOriginalName(); #Obtiene el nombre local del archivo de la computadora del usuario que subirá el documento
+        $fileName = "v{$versionLabel}_{$originalName}";
+
+        return $file->storeAs(
+            "documents/{$documentId}",
+            $fileName,
+            'public'
+        );
     }
 }

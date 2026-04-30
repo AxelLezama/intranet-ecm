@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Dom\Document;
 use Illuminate\Database\Eloquent\Model;
 
 class Department extends Model
@@ -17,6 +18,15 @@ class Department extends Model
     public function users()
     {
         return $this->hasMany(User::class);
+    }
+
+    /**
+     * Obtener los documentos pertenecientes a cierto depto
+     */
+
+    public function documents()
+    {
+        return $this->belongsToMany(Document::class);
     }
 
 }
