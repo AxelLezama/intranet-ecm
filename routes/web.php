@@ -5,7 +5,7 @@ use App\Livewire\Admin\Roles\Index as RolesIndex;
 use App\Livewire\Admin\Departments\Index as DepartmentsIndex;
 use App\Livewire\Admin\DocumentTypes\Index as DocumentTypesIndex;
 use App\Livewire\Admin\Users\Index as UsersIndex;
-use App\Livewire\Supervisor\Notices\Index as NoticesIndex;
+
 
 
 Route::view('/', 'welcome');
@@ -28,4 +28,3 @@ Route::get('/admin/documentTypes', DocumentTypesIndex::class)->name('documentTyp
 
 Route::get('/admin/users', UsersIndex::class)->name('users.index');
 
-Route::get('/supervisor/notices', NoticesIndex::class)->name('notices.index');

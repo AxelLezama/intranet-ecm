@@ -12,21 +12,31 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('documents', function (Blueprint $table) {
+
             $table->id();
+
             $table->foreignId('document_type_id')
                 ->constrained()
                 ->restrictOnDelete();
+
             $table->string('title');
-            $table->decimal('current_version', 4, 2)->default(1.0);
+
             $table->foreignId('created_by')
                 ->nullable()
                 ->constrained('users')
                 ->nullOnDelete();
+
+            // SOLO LA COLUMNA
+            $table->unsignedBigInteger('current_version_id')
+                ->nullable();
+
             $table->foreignId('updated_by')
                 ->nullable()
                 ->constrained('users')
                 ->nullOnDelete();
+
             $table->timestamps();
+
             $table->unique(['title', 'document_type_id']);
         });
     }

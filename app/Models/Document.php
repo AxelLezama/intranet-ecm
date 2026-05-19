@@ -9,7 +9,7 @@ class Document extends Model
     protected $fillable = [
         'document_type_id',
         'title',
-        'current_version',
+        'current_version_id',
         'created_by',
         'updated_by'
     ];
@@ -44,5 +44,13 @@ class Document extends Model
     public function versions()
     {
         return $this->hasMany(DocumentVersion::class);
+    }
+
+    /**
+     * Obtener la versión actual/activa del documento.
+     */
+    public function currentVersion()
+    {
+        return $this->belongsTo(DocumentVersion::class, 'current_version_id');
     }
 }
