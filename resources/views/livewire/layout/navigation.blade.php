@@ -35,11 +35,11 @@ new class extends Component
                     </x-nav-link>
                 </div>
 
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                {{-- <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link :href="route('documents.index')" :active="request()->routeIs('documents.index')" wire:navigate>
                         {{ __('Documentos') }}
                     </x-nav-link>
-                </div>
+                </div> --}}
                 
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link :href="route('roles.index')" :active="request()->routeIs('roles.index')" wire:navigate>
@@ -64,11 +64,11 @@ new class extends Component
                         {{ __('Usuarios') }}
                     </x-nav-link>
                 </div>
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                {{-- <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link :href="route('notices.index')" :active="request()->routeIs('notices.index')" wire:navigate>
                         {{ __('Noticias') }}
                     </x-nav-link>
-                </div>
+                </div> --}}
             </div>
 
             <!-- Settings Dropdown -->
