@@ -9,10 +9,17 @@ class Document extends Model
     protected $fillable = [
         'document_type_id',
         'title',
+        'status',
+        'visibility',        
         'current_version_id',
         'created_by',
-        'updated_by'
+        'updated_by',
     ];
+
+    protected $cast = [
+        'status' => 'string'
+    ];
+
 
     /**
      * Obtener el tipo de documento.
@@ -29,7 +36,6 @@ class Document extends Model
     {
         return $this->belongsTo(User::class, 'created_by');
     }
-
     /**
      * Obtener el usuario que actualizó el documento.
      */
@@ -37,7 +43,6 @@ class Document extends Model
     {
         return $this->belongsTo(User::class, 'updated_by');
     }
-
     /**
      * Obtener las versiones del documento.
      */
@@ -45,12 +50,24 @@ class Document extends Model
     {
         return $this->hasMany(DocumentVersion::class);
     }
-
     /**
      * Obtener la versión actual/activa del documento.
      */
     public function currentVersion()
     {
         return $this->belongsTo(DocumentVersion::class, 'current_version_id');
+    }
+    /**
+     * Obtener los departamentos a los que pertenece el documento.
+     */
+    public function departments()
+    {
+        return $this->belongsToMany(Department::class)
+            ->withTimestamps();
+    }
+
+    public function latestVersion()
+    {
+        return $this->hasOne(DocumentVersion::class)->latestOfMany('version');
     }
 }

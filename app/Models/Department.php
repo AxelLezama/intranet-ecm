@@ -19,4 +19,12 @@ class Department extends Model
         return $this->hasMany(User::class);
     }
 
+    /**
+     * Obtener los documentos que pertenecen a los deptos.
+     */
+    public function documents()
+    {
+        return $this->belongsToMany(Document::class)
+            ->withTimestamps();
+    }
 }

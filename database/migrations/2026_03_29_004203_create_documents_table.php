@@ -30,6 +30,8 @@ return new class extends Migration
             $table->unsignedBigInteger('current_version_id')
                 ->nullable();
 
+            $table->enum('status', ['draft', 'active', 'archived'])->default('draft');
+
             $table->foreignId('updated_by')
                 ->nullable()
                 ->constrained('users')

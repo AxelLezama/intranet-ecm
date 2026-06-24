@@ -76,27 +76,11 @@ class User extends Authenticatable
     }
 
     /**
-     * Obtener los documentos actualizados por el usuario.
-     */
-    public function updatedDocuments()
-    {
-        return $this->hasMany(Document::class, 'updated_by');
-    }
-
-    /**
      * Obtener las versiones de documentos creadas por el usuario.
      */
     public function createdDocumentVersions()
     {
         return $this->hasMany(DocumentVersion::class, 'created_by');
-    }
-
-    /**
-     * Obtener las versiones de documentos actualizadas por el usuario.
-     */
-    public function updatedDocumentVersions()
-    {
-        return $this->hasMany(DocumentVersion::class, 'updated_by');
     }
 
     /**
@@ -107,11 +91,30 @@ class User extends Authenticatable
         return $this->hasMany(Notice::class, 'created_by');
     }
 
-    /**
-     * Obtener los avisos actualizados por el usuario.
-     */
-    public function updatedNotices()
+    public function hasRole(string $role): bool
     {
-        return $this->hasMany(Notice::class, 'updated_by');
+        return $this->role?->name === $role;
+    }
+
+    public function hasAnyRole(array $roles): bool
+    {
+        return in_array($this->role?->name, $roles);
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->hasRole('admin');
+    }
+    public function isSupervisor(): bool
+    {
+        return $this->hasRole('supervisor');
+    }
+    public function isCommittee(): bool
+    {
+        return $this->hasRole('committee');
+    }
+    public function isEmployee(): bool
+    {
+        return $this->hasRole('employee');
     }
 }
