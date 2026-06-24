@@ -1,4 +1,4 @@
-<div>
+<div class="p-6 bg-white mx-6 my-6 rounded-xl">
     {{-- Alerta de éxito --}}
     @if ($success)
         <div
@@ -7,7 +7,7 @@
             x-init="setTimeout(() => show = false, 4000)"
             class="mb-6 rounded-lg bg-green-50 border border-green-200 p-4 text-green-800 text-sm"
         >
-            ✅ Documento creado y publicado correctamente.
+            Documento creado y publicado correctamente.
         </div>
     @endif
 

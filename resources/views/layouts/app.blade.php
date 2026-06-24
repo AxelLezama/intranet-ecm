@@ -16,7 +16,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <link href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.css" rel="stylesheet">
-
+    <script src="https://fontawesome.com" crossorigin="anonymous"></script>
 </head>
 
 <body class="font-sans antialiased">
