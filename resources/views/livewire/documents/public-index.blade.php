@@ -60,11 +60,11 @@
                         <span>{{ $document->updated_at->format('d/m/Y') }}</span>
                     </div>
 
-                    <a href="{{ route('documents.versions', $document->id) }}"
+                    <a href="{{ route('documents.download', $document->id) }}"
                         class="mt-3 flex items-center justify-center gap-2 w-full py-2
                           text-xs font-medium text-blue-600 bg-blue-50
                           hover:bg-blue-100 rounded-xl transition">
-                        Ver documento
+                        Ver
                     </a>
                 </div>
             @empty

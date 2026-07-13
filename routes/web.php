@@ -1,18 +1,16 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-
-// Admin
-use App\Livewire\Admin\Roles\Index as RolesIndex;
+use Illuminate\Support\Facades\Storage;
 use App\Livewire\Admin\Departments\Index as DepartmentsIndex;
 use App\Livewire\Admin\DocumentTypes\Index as DocumentTypesIndex;
+use App\Livewire\Admin\Roles\Index as RolesIndex;
 use App\Livewire\Admin\Users\Index as UsersIndex;
-
-// Documents
-use App\Livewire\Documents\PublicIndex;
-use App\Livewire\Documents\Index as DocumentsIndex;
 use App\Livewire\Documents\Create as DocumentsCreate;
+use App\Livewire\Documents\Index as DocumentsIndex;
+use App\Livewire\Documents\PublicIndex;
 use App\Livewire\Documents\Versions as DocumentsVersions;
+use App\Models\Document;
+use Illuminate\Support\Facades\Route;
 
 // ── Rutas públicas ────────────────────────────────────────────
 Route::view('/', 'welcome');
@@ -26,6 +24,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // ── Empleados — cards públicas ────────────────────────────
     Route::get('/documentos', PublicIndex::class)
         ->name('documents.public');
+
+    Route::get('/documentos/{document}/descargar', function (Document $document) {
+
+        $version = $document->currentVersion;
+
+        return Storage::download($version->file_path);
+    })->middleware(['auth', 'verified'])
+        ->name('documents.download');
 
     // ── Gestión de documentos (supervisor, committee, admin) ──
     Route::middleware(['role:supervisor,committee,admin'])->group(function () {
