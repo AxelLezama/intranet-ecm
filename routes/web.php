@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Storage;
 use App\Livewire\Admin\Departments\Index as DepartmentsIndex;
 use App\Livewire\Admin\DocumentTypes\Index as DocumentTypesIndex;
 use App\Livewire\Admin\Roles\Index as RolesIndex;
@@ -10,7 +9,9 @@ use App\Livewire\Documents\Index as DocumentsIndex;
 use App\Livewire\Documents\PublicIndex;
 use App\Livewire\Documents\Versions as DocumentsVersions;
 use App\Models\Document;
+use App\Models\User;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 
 // ── Rutas públicas ────────────────────────────────────────────
 Route::view('/', 'welcome');
@@ -18,7 +19,6 @@ Route::view('/', 'welcome');
 // ── Rutas autenticadas ────────────────────────────────────────
 Route::middleware(['auth', 'verified'])->group(function () {
 
-    Route::view('dashboard', 'dashboard')->name('dashboard');
     Route::view('profile', 'profile')->name('profile');
 
     // ── Empleados — cards públicas ────────────────────────────
@@ -48,6 +48,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // ── Admin — solo admin ────────────────────────────────────
     Route::middleware(['role:admin'])->prefix('admin')->group(function () {
+
+        Route::get('/dashboard', fn() => view('dashboard', ['users' => User::count(), 'documents' => Document::count()]))->name('dashboard');
 
         Route::get('/roles', RolesIndex::class)
             ->name('roles.index');
