@@ -137,9 +137,7 @@ new class extends Component {
     <div :class="{ 'block': open, 'hidden': !open }" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
 
-            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate>
-                Dashboard
-            </x-responsive-nav-link>
+
 
             @if (auth()->user()->isEmployee())
                 <x-responsive-nav-link :href="route('documents.public')" :active="request()->routeIs('documents.public')" wire:navigate>
@@ -150,6 +148,10 @@ new class extends Component {
             @if (auth()->user()->hasAnyRole(['supervisor', 'committee', 'admin']))
                 <x-responsive-nav-link :href="route('documents.index')" :active="request()->routeIs('documents.index', 'documents.create', 'documents.versions')" wire:navigate>
                     Documentos
+                </x-responsive-nav-link>
+
+                <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate>
+                    Dashboard
                 </x-responsive-nav-link>
             @endif
 

@@ -36,7 +36,7 @@
                 </svg>
             </div>
             <div>
-                <p class="text-sm font-medium text-gray-500">Documentos</p>
+                <p class="text-sm font-medium text-gray-500">Documentos Creados</p>
                 <h3 class="text-2xl font-bold text-gray-900 mt-1">{{ $documents }}</h3>   
             </div>
         </div>

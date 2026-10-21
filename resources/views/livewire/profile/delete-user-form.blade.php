@@ -23,6 +23,8 @@ new class extends Component
     }
 }; ?>
 
+<!-- PENDIENTE OCULTAR ESTA OPCION AL EMPLEADO -->
+{{-- @if (auth()->user()->hasAnyRole(['supervisor', 'committee', 'admin'])) --}}
 <section class="space-y-6">
     <header>
         <h2 class="text-lg font-medium text-gray-900">
@@ -77,3 +79,4 @@ new class extends Component
         </form>
     </x-modal>
 </section>
+{{-- @endif --}}

@@ -17,7 +17,7 @@ class RoleSeeder extends Seeder
             'description' => 'Control Total'
         ]);
         Role::create([
-            'name' => 'comittee',
+            'name' => 'committee',
             'description' => 'Gestión documental de dirección'
         ]);
         Role::create([
