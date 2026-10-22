@@ -31,42 +31,14 @@ class PublicIndex extends Component
 
     public function getDocumentsProperty()
     {
-        $user = auth()->user();
-
-        $query = Document::query()
-            ->with(['documentType', 'currentVersion'])
-            ->where('status', 'active');
-
-        if (! $user->isAdmin()) {
-            $query
-                ->where('visibility', 'employees')
-                ->whereHas(
-                    'departments',
-                    fn($q) =>
-                    $q->where('departments.id', $user->department_id)
-                )
-                ->whereHas(
-                    'currentVersion',
-                    fn($q) =>
-                    $q->whereDate('start_date', '<=', today())
-                        ->where(
-                            fn($dates) =>
-                            $dates->whereNull('expires_at')
-                                ->orWhereDate('expires_at', '>', today())
-                        )
-                );
-        }
-
-        return $query
+        return $this->visibleDocumentsQuery()
             ->when(
                 $this->search,
-                fn($q) =>
-                $q->where('title', 'like', '%' . $this->search . '%')
+                fn($q) => $q->where('title', 'like', '%' . $this->search . '%')
             )
             ->when(
                 $this->filterType,
-                fn($q) =>
-                $q->where('document_type_id', $this->filterType)
+                fn($q) => $q->where('document_type_id', $this->filterType)
             )
             ->orderByDesc('updated_at')
             ->paginate(12);
@@ -91,22 +63,47 @@ class PublicIndex extends Component
             return null;
         }
 
-        return Document::with([
-            'documentType',
-            'currentVersion',
-            'departments',
-        ])
-            ->where('status', 'active')
-            ->where('visibility', 'employees')
-            ->whereHas(
-                'departments',
-                fn($query) =>
-                $query->where(
-                    'departments.id',
-                    auth()->user()->department_id
-                )
-            )
+        return $this->visibleDocumentsQuery()
             ->findOrFail($this->previewDocumentId);
+    }
+
+    private function visibleDocumentsQuery()
+    {
+        $user = auth()->user();
+        $role = $user->role?->name;
+
+        $query = Document::query()
+            ->with(['documentType', 'currentVersion', 'departments'])
+            ->where('status', 'active');
+
+        if ($role === 'admin') {
+            return $query;
+        }
+
+        if ($role === 'supervisor') {
+            return $query->where('visibility', 'employees');
+        }
+
+        if ($role === 'committee') {
+            return $query->where('visibility', 'committee'); // Confirma que ese sea el valor guardado
+        }
+
+        if ($role === 'employee') {
+            return $query
+                ->where('visibility', 'employees')
+                ->whereHas(
+                    'departments',
+                    fn($q) => $q->where('departments.id', $user->department_id)
+                )
+                ->whereHas(
+                    'currentVersion',
+                    fn($q) => $q->whereDate('start_date', '<=', today())
+                        ->where(fn($dates) => $dates->whereNull('expires_at')
+                            ->orWhereDate('expires_at', '>', today()))
+                );
+        }
+
+        abort(403);
     }
 
     public function render()
