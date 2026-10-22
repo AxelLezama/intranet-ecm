@@ -22,6 +22,8 @@ class Versions extends Component
     public string  $note        = '';
     public string  $change_type = 'content';
     public string  $start_date  = '';
+    public ?string $expires_at = null;
+    public bool $never_expires = false;
 
     // ── UI state ──────────────────────────────────────────
     public bool $success = false;
@@ -35,7 +37,14 @@ class Versions extends Component
             'departments',
             'creator',
         ]);
-        $this->start_date = now()->format('Y-m-d');
+        $this->start_date = now()->addDay()->format('Y-m-d');
+        $currentExpiration = $this->document->currentVersion?->expires_at;
+
+        $this->expires_at = $currentExpiration
+            ? \Illuminate\Support\Carbon::parse($currentExpiration)->format('Y-m-d')
+            : null;
+
+        $this->never_expires = $this->expires_at === null;
     }
 
     // ── Versiones ordenadas ───────────────────────────────
@@ -67,10 +76,15 @@ class Versions extends Component
         $this->authorize('uploadVersion', $this->document);
 
         $this->validate([
-            'file'        => 'required|file|mimes:pdf|max:10240',
+            'file' => $this->change_type === 'content'
+                ? 'required|file|mimes:pdf|max:10240'
+                : 'nullable',
             'note'        => 'nullable|string|max:1000',
             'change_type' => 'required|in:content,validity',
-            'start_date'  => 'required|date',
+            'never_expires' => 'boolean',
+            'expires_at' => $this->never_expires
+                ? 'nullable'
+                : 'required|date|after:today',
         ]);
 
         DB::transaction(function () {
@@ -80,7 +94,9 @@ class Versions extends Component
                 ->update(['end_date' => now()]);
 
             // Guardar archivo
-            $path = $this->file->store('documents', 'local');
+            $path = $this->change_type === 'content'
+                ? $this->file->store('documents', 'local')
+                : $this->document->currentVersion->file_path;
 
             // Crear nueva versión
             $version = DocumentVersion::create([
@@ -89,7 +105,8 @@ class Versions extends Component
                 'file_path'   => $path,
                 'note'        => $this->note ?: null,
                 'change_type' => $this->change_type,
-                'start_date'  => $this->start_date,
+                'start_date' => now()->toDateString(),
+                'expires_at' => $this->never_expires ? null : $this->expires_at,
                 'created_by'  => auth()->id(),
                 'updated_by'  => auth()->id(),
             ]);
@@ -106,8 +123,12 @@ class Versions extends Component
 
         $this->success   = true;
         $this->showForm  = false;
-        $this->reset(['file', 'note', 'change_type']);
-        $this->start_date = now()->format('Y-m-d');
+        $this->reset([
+            'note',
+            'file',
+            'change_type',
+        ]);
+        $this->start_date = now()->addDay()->format('Y-m-d');
     }
 
     // ── Descarga segura ───────────────────────────────────
@@ -122,6 +143,14 @@ class Versions extends Component
             $version->file_path,
             $this->document->title . '_v' . number_format($version->version, 2) . '.pdf'
         );
+    }
+
+    public function updatedChangeType(): void
+    {
+        if ($this->change_type === 'validity') {
+            $this->reset('file');
+            $this->resetValidation('file');
+        }
     }
 
     public function render()

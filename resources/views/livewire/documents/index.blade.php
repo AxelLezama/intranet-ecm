@@ -76,15 +76,32 @@
                     @forelse ($this->documents as $document)
                         <tr class="hover:bg-gray-50 transition">
 
-                            {{-- Título + status --}}
+                            {{-- Título + estado --}}
                             <td class="px-4 py-3">
+                                @php
+                                    $vencido =
+                                        $document->currentVersion?->expires_at &&
+                                        \Illuminate\Support\Carbon::parse($document->currentVersion->expires_at)
+                                            ->startOfDay()
+                                            ->lte(today());
+
+                                    $estado =
+                                        $document->status === 'archived'
+                                            ? 'Archivado'
+                                            : ($vencido
+                                                ? 'Vencido'
+                                                : 'Activo');
+                                @endphp
+
                                 <div class="font-medium text-gray-900">{{ $document->title }}</div>
+
                                 <span @class([
                                     'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium mt-1',
-                                    'bg-green-100 text-green-700' => $document->status === 'active',
-                                    'bg-gray-100 text-gray-500' => $document->status === 'archived',
+                                    'bg-green-100 text-green-700' => $estado === 'Activo',
+                                    'bg-amber-100 text-amber-700' => $estado === 'Vencido',
+                                    'bg-gray-100 text-gray-500' => $estado === 'Archivado',
                                 ])>
-                                    {{ $document->status === 'active' ? 'Activo' : 'Archivado' }}
+                                    {{ $estado }}
                                 </span>
                             </td>
 

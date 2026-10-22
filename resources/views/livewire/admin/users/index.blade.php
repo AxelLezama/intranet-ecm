@@ -89,7 +89,7 @@
 
         <!-- Botón -->
         <x-slot name="actions">
-            <button class="bg-blue-500 text-white px-4 py-2 rounded" wire:click="$set('isModalOpen', true)">
+            <button wire:click="create" class="bg-blue-500 text-white px-4 py-2 rounded">
                 Agregar Usuario
             </button>
         </x-slot>

@@ -21,7 +21,7 @@ class Index extends Component
     public function updatingSearch(): void     { $this->resetPage(); }
     public function updatingFilterType(): void { $this->resetPage(); }
     public function updatingFilterDept(): void { $this->resetPage(); }
-
+    
     // ── Catálogos ─────────────────────────────────────────
     public function getDocumentTypesProperty()
     {

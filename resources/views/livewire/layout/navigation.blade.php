@@ -28,18 +28,21 @@ new class extends Component {
                 <div class="hidden sm:flex sm:items-center sm:ms-10 space-x-1">
 
                     {{-- Empleado: ve sus documentos activos (cards) --}}
-                    @if (auth()->user()->isEmployee())
+                    @if (auth()->user()->hasAnyRole(['committee', 'employee']))
                         <x-nav-link :href="route('documents.public')" :active="request()->routeIs('documents.public')" wire:navigate>
-                            Documentos
+                            Documentos Públicos
                         </x-nav-link>
                     @endif
 
-                    {{-- Supervisor / Committee / Admin: gestión (tabla) --}}
+                    {{-- Supervisor / Committee / Admin: gestión de documentos --}}
                     @if (auth()->user()->hasAnyRole(['supervisor', 'committee', 'admin']))
                         <x-nav-link :href="route('documents.index')" :active="request()->routeIs('documents.index', 'documents.create', 'documents.versions')" wire:navigate>
                             Documentos
                         </x-nav-link>
-                        {{-- Dashboard — todos los roles a exepcion de employees --}}
+                    @endif
+
+                    {{-- Dashboard: supervisor y admin --}}
+                    @if (auth()->user()->hasAnyRole(['supervisor', 'admin']))
                         <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate>
                             Dashboard
                         </x-nav-link>

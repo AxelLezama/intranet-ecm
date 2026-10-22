@@ -13,12 +13,23 @@
                     <span class="px-2 py-0.5 bg-indigo-50 text-indigo-600 rounded-full text-xs font-medium">
                         {{ $document->documentType->name ?? '—' }}
                     </span>
+                    @php
+                        $vencido =
+                            $document->currentVersion?->expires_at &&
+                            \Illuminate\Support\Carbon::parse($document->currentVersion->expires_at)
+                                ->startOfDay()
+                                ->lte(today());
+
+                        $estado = $document->status === 'archived' ? 'Archivado' : ($vencido ? 'Vencido' : 'Activo');
+                    @endphp
+
                     <span @class([
                         'px-2 py-0.5 rounded-full text-xs font-medium',
-                        'bg-green-100 text-green-700' => $document->status === 'active',
-                        'bg-gray-100 text-gray-500' => $document->status === 'archived',
+                        'bg-green-100 text-green-700' => $estado === 'Activo',
+                        'bg-amber-100 text-amber-700' => $estado === 'Vencido',
+                        'bg-gray-100 text-gray-500' => $estado === 'Archivado',
                     ])>
-                        {{ $document->status === 'active' ? 'Activo' : 'Archivado' }}
+                        {{ $estado }}
                     </span>
                     @if ($document->currentVersion)
                         <span class="font-mono text-xs bg-blue-50 text-blue-700 px-2 py-0.5 rounded">
@@ -44,7 +55,7 @@
         @if ($success)
             <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 4000)"
                 class="rounded-lg bg-green-50 border border-green-200 p-4 text-green-800 text-sm">
-                ✅ Nueva versión publicada correctamente.
+                Nueva versión publicada correctamente.
             </div>
         @endif
 
@@ -85,26 +96,64 @@
                         <label class="block text-sm font-medium text-gray-700 mb-1">
                             Fecha de vigencia <span class="text-red-500">*</span>
                         </label>
-                        <input type="date" wire:model="start_date"
-                            class="w-full rounded-lg border-gray-300 text-sm
-                                  focus:ring-blue-500 focus:border-blue-500" />
-                        @error('start_date')
-                            <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
-                        @enderror
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                Fecha de vencimiento
+                            </label>
+
+                            <label class="mb-2 flex items-center gap-2 text-sm">
+                                <input type="checkbox" wire:model.live="never_expires">
+                                <span>No vence</span>
+                            </label>
+
+                            @if (!$never_expires)
+                                <input type="date" wire:model="expires_at"
+                                    min="{{ now()->addDay()->format('Y-m-d') }}"
+                                    class="w-full rounded-lg border-gray-300 text-sm">
+
+                                @error('expires_at')
+                                    <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
+                                @enderror
+                            @endif
+
+                            <p class="mt-1 text-xs text-gray-500">
+                                El documento estará vigente desde hoy.
+                            </p>
+                        </div>
                     </div>
 
                     {{-- Archivo --}}
                     <div class="sm:col-span-2">
                         <label class="block text-sm font-medium text-gray-700 mb-1">
-                            Archivo PDF <span class="text-red-500">*</span>
+                            Archivo PDF
+
+                            @if ($change_type === 'content')
+                                <span class="text-red-500">*</span>
+                            @else
+                                <span class="text-gray-400 font-normal">(se conservará el PDF actual)</span>
+                            @endif
                         </label>
-                        <input type="file" wire:model="file" accept=".pdf"
-                            class="block w-full text-sm text-gray-500
-                                  file:mr-4 file:py-2 file:px-4 file:rounded-lg
-                                  file:border-0 file:bg-blue-50 file:text-blue-700
-                                  hover:file:bg-blue-100" />
-                        <div wire:loading wire:target="file" class="mt-1 text-xs text-blue-500">Subiendo archivo...
+
+                        <input type="file" wire:model="file" accept=".pdf" @disabled($change_type === 'validity')
+                            @class([
+                                'block w-full text-sm text-gray-500
+                                                                                                                               file:mr-4 file:py-2 file:px-4 file:rounded-lg
+                                                                                                                               file:border-0 file:bg-blue-50 file:text-blue-700
+                                                                                                                               hover:file:bg-blue-100',
+                                'opacity-50 cursor-not-allowed' => $change_type === 'validity',
+                            ]) />
+
+                        @if ($change_type === 'validity')
+                            <p class="mt-1 text-xs text-gray-500">
+                                En un cambio de vigencia se mantiene el PDF de la versión actual.
+                            </p>
+                        @endif
+
+                        <div wire:loading wire:target="file" class="mt-1 text-xs text-blue-500">
+                            Subiendo archivo...
                         </div>
+
                         @error('file')
                             <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
                         @enderror
@@ -178,13 +227,27 @@
                                 @endif
 
                                 {{-- Meta --}}
+                                @php
+                                    $versionVencida =
+                                        $version->expires_at &&
+                                        \Illuminate\Support\Carbon::parse($version->expires_at)
+                                            ->startOfDay()
+                                            ->lte(today());
+                                @endphp
+
                                 <p class="text-xs text-gray-400">
                                     Vigencia desde {{ \Carbon\Carbon::parse($version->start_date)->format('d/m/Y') }}
+
                                     @if ($version->end_date)
                                         hasta {{ \Carbon\Carbon::parse($version->end_date)->format('d/m/Y') }}
+                                    @elseif ($versionVencida)
+                                        · vencida el {{ \Carbon\Carbon::parse($version->expires_at)->format('d/m/Y') }}
+                                    @elseif ($version->expires_at)
+                                        · vence el {{ \Carbon\Carbon::parse($version->expires_at)->format('d/m/Y') }}
                                     @else
-                                        · vigente
+                                        · sin vencimiento
                                     @endif
+
                                     · subido por {{ $version->creator->name ?? 'Sistema' }}
                                 </p>
                             </div>

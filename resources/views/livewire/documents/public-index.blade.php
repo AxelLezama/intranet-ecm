@@ -60,12 +60,19 @@
                         <span>{{ $document->updated_at->format('d/m/Y') }}</span>
                     </div>
 
-                    <a href="{{ route('documents.download', $document->id) }}"
-                        class="mt-3 flex items-center justify-center gap-2 w-full py-2
-                          text-xs font-medium text-blue-600 bg-blue-50
-                          hover:bg-blue-100 rounded-xl transition">
-                        Ver
-                    </a>
+                    <div>
+                        <a href="{{ route('documents.download', $document->id) }}"
+                            class="mt-3 flex items-center justify-center gap-2 w-full py-2
+                            text-xs font-medium text-blue-600 bg-blue-50
+                            hover:bg-blue-100 rounded-xl transition">
+                            Ver
+                        </a>
+
+                        <button type="button" wire:click="preview({{ $document->id }})"
+                            class="mt-3 w-full rounded-xl bg-gray-100 py-2 text-xs font-medium text-gray-700 hover:bg-gray-200">
+                            Ver detalles
+                        </button>
+                    </div>
                 </div>
             @empty
                 <div class="col-span-3 py-16 text-center text-gray-400">
@@ -78,6 +85,60 @@
                 </div>
             @endforelse
         </div>
+
+        @if ($this->previewDocument)
+            <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+                <div class="w-full max-w-lg rounded-2xl bg-white p-6 shadow-xl">
+                    <div class="mb-4 flex items-start justify-between">
+                        <h2 class="text-lg font-semibold text-gray-900">
+                            {{ $this->previewDocument->title }}
+                        </h2>
+
+                        <button type="button" wire:click="closePreview" class="text-gray-400 hover:text-gray-700">
+                            Cerrar
+                        </button>
+                    </div>
+
+                    <dl class="space-y-3 text-sm">
+                        <div>
+                            <dt class="font-medium text-gray-500">Tipo</dt>
+                            <dd>{{ $this->previewDocument->documentType->name ?? '—' }}</dd>
+                        </div>
+
+                        <div>
+                            <dt class="font-medium text-gray-500">Departamentos</dt>
+                            <dd>{{ $this->previewDocument->departments->pluck('name')->join(', ') ?: '—' }}</dd>
+                        </div>
+
+                        <div>
+                            <dt class="font-medium text-gray-500">Versión actual</dt>
+                            <dd>
+                                {{ $this->previewDocument->currentVersion
+                                    ? number_format($this->previewDocument->currentVersion->version, 2)
+                                    : '—' }}
+                            </dd>
+                        </div>
+
+                        @if ($this->previewDocument->currentVersion)
+                            <div>
+                                <dt class="font-medium text-gray-500">Vigente desde</dt>
+                                <dd>{{ $this->previewDocument->currentVersion->start_date }}</dd>
+                            </div>
+
+                            <div>
+                                <dt class="font-medium text-gray-500">Nota</dt>
+                                <dd>{{ $this->previewDocument->currentVersion->note ?: '—' }}</dd>
+                            </div>
+                        @endif
+                    </dl>
+
+                    <button type="button" wire:click="closePreview"
+                        class="mt-6 w-full rounded-xl bg-gray-100 py-2 text-sm font-medium text-gray-700 hover:bg-gray-200">
+                        Cerrar
+                    </button>
+                </div>
+            </div>
+        @endif
 
         @if ($this->documents->hasPages())
             <div>{{ $this->documents->links() }}</div>

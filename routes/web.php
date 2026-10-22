@@ -46,10 +46,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
             ->name('documents.versions');
     });
 
+    // Dashboard: supervisor y admin
+    Route::middleware(['role:supervisor,admin,committee'])
+        ->get('/admin/dashboard', fn() => view('dashboard', [
+            'users' => User::count(),
+            'documents' => Document::count(),
+        ]))
+        ->name('dashboard');
+
     // ── Admin — solo admin ────────────────────────────────────
     Route::middleware(['role:admin'])->prefix('admin')->group(function () {
 
-        Route::get('/dashboard', fn() => view('dashboard', ['users' => User::count(), 'documents' => Document::count()]))->name('dashboard');
 
         Route::get('/roles', RolesIndex::class)
             ->name('roles.index');
@@ -63,6 +70,37 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/users', UsersIndex::class)
             ->name('users.index');
     });
+
+    Route::get('/documentos/{document}/descargar', function (Document $document) {
+        $user = auth()->user();
+        $version = $document->currentVersion;
+
+        abort_if(! $version, 404);
+
+        if (! $user->isAdmin()) {
+            $isCurrentVersionValid = $document->currentVersion()
+                ->whereDate('start_date', '<=', today())
+                ->where(
+                    fn($q) =>
+                    $q->whereNull('expires_at')
+                        ->orWhereDate('expires_at', '>', today())
+                )
+                ->exists();
+
+            abort_unless(
+                $document->status === 'active'
+                    && $document->visibility === 'employees'
+                    && $document->departments()
+                    ->where('departments.id', $user->department_id)
+                    ->exists()
+                    && $isCurrentVersionValid,
+                403
+            );
+        }
+
+        return Storage::download($version->file_path);
+    })->middleware(['auth', 'verified'])
+        ->name('documents.download');
 });
 
 require __DIR__ . '/auth.php';

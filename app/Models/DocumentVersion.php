@@ -15,7 +15,8 @@ class DocumentVersion extends Model
         'start_date', 
         'end_date', 
         'created_by', 
-        'updated_by'
+        'updated_by',
+        'expires_at'
     ];
 
     /**
