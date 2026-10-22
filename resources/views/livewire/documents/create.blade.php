@@ -1,4 +1,4 @@
-<div class="p-6 bg-white mx-6 my-6 rounded-xl">
+<div class="mx-3 my-4 rounded-xl bg-white p-4 sm:mx-6 sm:my-6 sm:p-6">
 
 
     {{-- Alerta de éxito --}}
@@ -68,9 +68,9 @@
                     @endforeach
                 </select>
             </div>
-            <div class="mb-2 flex gap-4">
+            <div class="mb-2 flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
                 <button type="button" wire:click="selectAllDepartments"
-                    class="mb-2 text-sm text-blue-600 hover:text-blue-800 p-2 bg-blue-100 rounded-sm mt-3">
+                    class="mt-2 rounded-sm bg-blue-100 p-2 text-left text-sm text-blue-600 hover:text-blue-800 sm:mt-3">
                     Seleccionar todos los departamentos
                 </button>
                 <button type="button" wire:click="clearDepartments" class="text-sm text-gray-600 hover:text-gray-800">

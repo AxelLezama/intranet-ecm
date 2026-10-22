@@ -1,10 +1,10 @@
-<div class="p-6">
+<div class="p-4 sm:p-6">
     <div class="space-y-6">
 
         {{-- Header --}}
-        <div class="flex items-start justify-between gap-4">
-            <div>
-                <div class="flex items-center gap-2 text-sm text-gray-500 mb-1">
+        <div class="flex flex-col items-stretch gap-4 sm:flex-row sm:items-start sm:justify-between">
+            <div class="min-w-0">
+                <div class="mb-1 flex flex-wrap items-center gap-2 text-sm text-gray-500">
                     <a href="{{ route('documents.index') }}" class="hover:text-blue-600 transition">Documentos</a>
                     <span>/</span>
                     <span class="text-gray-700 font-medium">{{ $document->title }}</span>
@@ -43,8 +43,8 @@
             @can('uploadVersion', $document)
                 @if ($document->status === 'active')
                     <button wire:click="$toggle('showForm')"
-                        class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white
-                               text-sm font-medium rounded-lg hover:bg-blue-700 transition whitespace-nowrap">
+                        class="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2
+                               text-sm font-medium text-white transition hover:bg-blue-700 sm:w-auto sm:whitespace-nowrap">
                         {{ $showForm ? 'Cancelar' : '+ Nueva versión' }}
                     </button>
                 @endif
@@ -61,7 +61,7 @@
 
         {{-- Formulario nueva versión --}}
         @if ($showForm)
-            <div class="bg-white rounded-xl border border-blue-200 p-5 space-y-4">
+            <div class="space-y-4 rounded-xl border border-blue-200 bg-white p-4 sm:p-5">
                 <h2 class="font-semibold text-gray-800 text-sm">Nueva versión</h2>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -194,8 +194,8 @@
 
             <ul class="divide-y divide-gray-100">
                 @forelse ($this->versions as $version)
-                    <li class="px-4 py-4 flex items-start justify-between gap-4 hover:bg-gray-50 transition">
-                        <div class="flex items-start gap-3">
+                    <li class="flex flex-col gap-3 px-4 py-4 hover:bg-gray-50 transition sm:flex-row sm:items-start sm:justify-between sm:gap-4">
+                        <div class="flex min-w-0 items-start gap-3">
                             {{-- Badge versión --}}
                             <span @class([
                                 'font-mono text-xs px-2 py-1 rounded-md mt-0.5 whitespace-nowrap',
@@ -206,7 +206,7 @@
                                 v{{ number_format($version->version, 2) }}
                             </span>
 
-                            <div class="space-y-0.5">
+                            <div class="min-w-0 space-y-0.5">
                                 {{-- Tipo de cambio --}}
                                 <div class="flex items-center gap-2">
                                     <span @class([
@@ -223,7 +223,7 @@
 
                                 {{-- Nota --}}
                                 @if ($version->note)
-                                    <p class="text-sm text-gray-600">{{ $version->note }}</p>
+                                    <p class="break-words text-sm text-gray-600">{{ $version->note }}</p>
                                 @endif
 
                                 {{-- Meta --}}
@@ -235,7 +235,7 @@
                                             ->lte(today());
                                 @endphp
 
-                                <p class="text-xs text-gray-400">
+                                <p class="break-words text-xs text-gray-400">
                                     Vigencia desde {{ \Carbon\Carbon::parse($version->start_date)->format('d/m/Y') }}
 
                                     @if ($version->end_date)
@@ -256,9 +256,8 @@
                         {{-- Descarga --}}
                         @if ($version->file_path)
                             <button wire:click="download({{ $version->id }})"
-                                class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium
-                                       text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-lg transition
-                                       whitespace-nowrap shrink-0">
+                                class="inline-flex w-full shrink-0 items-center justify-center gap-1.5 rounded-lg bg-gray-100 px-3 py-1.5
+                                       text-xs font-medium text-gray-600 transition hover:bg-gray-200 sm:w-auto sm:whitespace-nowrap">
                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />

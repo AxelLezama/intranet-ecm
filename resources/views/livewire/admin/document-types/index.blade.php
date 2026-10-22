@@ -1,4 +1,4 @@
-<div class="p-6">
+<div class="p-4 sm:p-6">
     <!-- Colocamos el titulo dependiendo el modo $isEditing-->
     <x-modal-l :show="$isModalOpen" :title="$isEditing ? 'Editar Tipo de documento' : 'Crear Tipo de documento'" closeAction="closeModal">
         <!-- Ejecutamos el metodo dependiendo el modo $isEditing-->
@@ -34,7 +34,7 @@
             </button>
         </x-slot>
 
-        <table class="min-w-full divide-y-2 divide-gray-800">
+        <table class="w-full min-w-[600px] divide-y-2 divide-gray-800">
             <thead>
                 <tr>
                     <th class="px-3 py-2">ID</th>

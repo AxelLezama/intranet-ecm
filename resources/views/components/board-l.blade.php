@@ -1,12 +1,12 @@
 @props(['show' => false, 'title', 'closeAction'])
 
-<div class="p-6 bg-white rounded-lg shadow border border-gray-200">
+<div class="p-4 sm:p-6 bg-white rounded-lg shadow border border-gray-200">
 
     <!-- Header -->
-    <div class="flex justify-between items-center mb-4">
+    <div class="flex flex-col items-start gap-3 mb-4 sm:flex-row sm:items-center sm:justify-between">
 
         <!-- Titulo -->
-        <h1 class="text-2xl font-bold text-gray-800">
+        <h1 class="text-xl sm:text-2xl font-bold text-gray-800">
             {{ $title }}
         </h1>
 

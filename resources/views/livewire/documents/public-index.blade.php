@@ -1,4 +1,4 @@
-<div class="p-6">
+<div class="p-4 sm:p-6">
     <div class="space-y-6">
 
         {{-- Filtros --}}
@@ -88,9 +88,9 @@
 
         @if ($this->previewDocument)
             <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-                <div class="w-full max-w-lg rounded-2xl bg-white p-6 shadow-xl">
-                    <div class="mb-4 flex items-start justify-between">
-                        <h2 class="text-lg font-semibold text-gray-900">
+                <div class="my-auto max-h-[calc(100vh-2rem)] w-full max-w-lg overflow-y-auto rounded-2xl bg-white p-4 shadow-xl sm:p-6">
+                    <div class="mb-4 flex items-start justify-between gap-3">
+                        <h2 class="min-w-0 break-words text-lg font-semibold text-gray-900">
                             {{ $this->previewDocument->title }}
                         </h2>
 

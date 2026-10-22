@@ -46,13 +46,21 @@ Route::middleware(['auth', 'verified'])->group(function () {
             ->name('documents.versions');
     });
 
-    // Dashboard: supervisor y admin
-    Route::middleware(['role:supervisor,admin,committee'])
-        ->get('/admin/dashboard', fn() => view('dashboard', [
+    // Los empleados que regresen a esta URL vuelven a sus documentos.
+    Route::get('/admin/dashboard', function () {
+        $user = auth()->user();
+
+        if ($user->isEmployee()) {
+            return redirect()->route('documents.public');
+        }
+
+        abort_unless($user->hasAnyRole(['supervisor', 'admin', 'committee']), 403);
+
+        return view('dashboard', [
             'users' => User::count(),
             'documents' => Document::count(),
-        ]))
-        ->name('dashboard');
+        ]);
+    })->name('dashboard');
 
     // ── Admin — solo admin ────────────────────────────────────
     Route::middleware(['role:admin'])->prefix('admin')->group(function () {

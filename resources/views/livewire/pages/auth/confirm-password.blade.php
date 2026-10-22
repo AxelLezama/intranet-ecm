@@ -29,6 +29,12 @@ new #[Layout('layouts.guest')] class extends Component
 
         session(['auth.password_confirmed_at' => time()]);
 
+        if (Auth::user()->isEmployee()) {
+            $this->redirectRoute('documents.public', navigate: true);
+
+            return;
+        }
+
         $this->redirectIntended(default: route('dashboard', absolute: false), navigate: true);
     }
 }; ?>

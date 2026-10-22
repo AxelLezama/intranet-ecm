@@ -1,4 +1,4 @@
-<div class="p-6">
+<div class="p-4 sm:p-6">
 
     <!-- Modal -->
     <x-modal-l :show="$isModalOpen" :title="$isEditing ? 'Editar Usuario' : 'Crear Usuario'" closeAction="closeModal">
@@ -95,7 +95,7 @@
         </x-slot>
 
         <!-- Tabla -->
-        <table class="min-w-full divide-y-2 divide-gray-800">
+        <table class="w-full min-w-[760px] divide-y-2 divide-gray-800">
             <thead>
                 <tr class="*:font-medium *:text-gray-900">
                     <th class="px-3 py-2">ID</th>

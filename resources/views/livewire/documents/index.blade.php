@@ -1,4 +1,4 @@
-<div class="p-6">
+<div class="p-4 sm:p-6">
     <div class="space-y-4">
 
         {{-- Notificación flash --}}
@@ -10,11 +10,12 @@
         @endif
 
         {{-- Header --}}
-        <div class="flex items-center justify-between">
-            <h1 class="text-xl font-semibold text-gray-900">Gestión de documentos</h1>
+        <div class="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <h1 class="text-lg font-semibold text-gray-900 sm:text-xl">Gestión de documentos</h1>
             @can('create', \App\Models\Document::class)
                 <a href="{{ route('documents.create') }}"
-                    class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white
+                    class="inline-flex w-full items-center justify-center gap-2 px-4 py-2 bg-blue-600 text-white
+                      sm:w-auto
                       text-sm font-medium rounded-lg hover:bg-blue-700 transition">
                     + Nuevo documento
                 </a>
@@ -54,7 +55,8 @@
 
         {{-- Tabla --}}
         <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
-            <table class="min-w-full divide-y divide-gray-200 text-sm">
+            <div class="overflow-x-auto">
+                <table class="min-w-[900px] divide-y divide-gray-200 text-sm sm:min-w-full">
                 <thead class="bg-gray-50">
                     <tr>
                         <th class="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wide">
@@ -195,7 +197,8 @@
                         </tr>
                     @endforelse
                 </tbody>
-            </table>
+                </table>
+            </div>
 
             @if ($this->documents->hasPages())
                 <div class="px-4 py-3 border-t border-gray-100">

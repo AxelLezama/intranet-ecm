@@ -1,9 +1,9 @@
 @props(['show' => false, 'title', 'closeAction'])
 
 @if($show)
-    <div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+    <div class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/50 p-3 sm:p-4">
 
-        <div class="bg-white p-6 rounded shadow-lg w-full max-w-md">
+        <div class="my-auto max-h-[calc(100vh-1.5rem)] w-full max-w-md overflow-y-auto rounded bg-white p-4 shadow-lg sm:max-h-[calc(100vh-2rem)] sm:p-6">
 
             <!-- Header -->
             <div class="flex justify-between items-center mb-4">
